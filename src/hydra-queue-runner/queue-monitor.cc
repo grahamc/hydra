@@ -166,7 +166,7 @@ bool State::getQueuedBuilds(Connection & conn,
                 BuildID propagatedFrom = 0;
 
                 auto res = txn.parameterized
-                    ("select max(build) from BuildSteps where drvPath = $1 and startTime != 0 and stopTime != 0 and status = 1")
+                    ("select max(build) from BuildSteps where drvPath = $1 and startTime > 0 and stopTime > 0 and status = 1")
                     (ex.step->drvPath).exec();
                 if (!res[0][0].is_null()) propagatedFrom = res[0][0].as<BuildID>();
 
