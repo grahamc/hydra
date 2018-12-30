@@ -21,8 +21,9 @@
 
    FIXME: O(n lg n); obviously, it would be better to keep a
    runnable queue sorted by priority. */
-struct StepInfo
+class StepInfo
 {
+public:
     Step::ptr step;
 
     /* The lowest share used of any jobset depending on this
@@ -35,6 +36,26 @@ struct StepInfo
     int highestLocalPriority;
     BuildID lowestBuildID;
 
+        /* Using the TAGS scheduling algorithm
+       (Task Assignment with Unknown Duration,
+       Mor Harchol-Balter, 2002) we start each build job with
+       a low set of resources allocated to it.
+
+       On the first try it gets 30s of build time and 1 core.
+       If it takes too long, the job is killed and rescheduled
+       with more time and cores.
+
+       On each subsequent try, it is increased. Instead of
+       tracking these resources independently, we instead
+       track the "rung" the build is on, and calculate those
+       granted resources.
+
+       I use the analogy of a "ladder", and climbing rungs of
+       the ladder as it progresses up the allocated resource
+       count.
+    */
+    int rung = 1;
+
     StepInfo(Step::ptr step, Step::State & step_) : step(step)
     {
         for (auto & jobset : step_.jobsets)
@@ -42,5 +63,37 @@ struct StepInfo
         highestGlobalPriority = step_.highestGlobalPriority;
         highestLocalPriority = step_.highestLocalPriority;
         lowestBuildID = step_.lowestBuildID;
+    }
+
+
+    /*
+      Return the amount of time the job should be permitted to run. This
+      number could get infinitely large, but the job should be considered
+      failed if the permitted run time exceeds Hydra's considered maximum.
+
+      Progression: 30s, 5min, 50min, 8hrs, 3.5 days
+    */
+    int getPermittedRunTime(void) {
+        return 3 * pow(10, rung);
+    }
+
+    /*
+      Return the number of desired cores. This number is aspirational and
+      is limited by the maximum number of cores available on a single
+      machine.
+
+      The number of desired cores is bounded by the number of attempts
+      which will fit within permitted runtime.
+
+      Given a Hydra maximum of 10 hours and the permitted run time
+      function of 3 * (10 ^ rung), then there will be a maximum of 5
+      retries, thus a maximum of 5^2 cores.
+
+      Really, though, figuring out a smarter way to do this would be nice.
+
+      Progression: 1, 4, 9, 16, 25
+    */
+    int getDesiredCores(void) {
+        return pow(rung, 2);
     }
 };
