@@ -3,10 +3,11 @@ use Hydra::Schema;
 use Hydra::Model::DB;
 use Cwd;
 use Setup;
+use JSON;
 
 my $db = Hydra::Model::DB->new;
 
-use Test::Simple tests => 76;
+use Test::More tests => 77;
 
 hydra_setup($db);
 
@@ -171,3 +172,15 @@ for my $build (queuedBuildsForJobset($jobset)) {
         ok($buildproduct->name eq "some text.txt", "We should have: \"some text.txt\", but found: ".$buildproduct->name."\n");
     }
 }
+
+subtest 'Outputs To Install' => sub {
+    plan tests => 2;
+
+    my $jobset = createBaseJobset("outputs-to-install", "outputs-to-install.nix");
+    ok(evalSucceeds($jobset), "Evaluating jobs/outputs-to-install.nix should exit with return code 0");
+    my $build = $jobset->builds->find({job => "example"});
+
+    my $outputstoinstall = $build->get_column("outputstoinstall");
+    is_deeply((decode_json $outputstoinstall), [ "out", "installed" ], "Outputs to install include out and installed");
+
+};

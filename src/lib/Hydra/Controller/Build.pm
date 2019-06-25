@@ -65,6 +65,12 @@ sub build_GET {
     my $build = $c->stash->{build};
 
     $c->stash->{template} = 'build.tt';
+    if ($build->outputstoinstall) {
+        $c->stash->{outputstoinstall} = decode_json $build->outputstoinstall;
+    } else {
+        $c->stash->{outputstoinstall} = [];
+    }
+
     $c->stash->{isLocalStore} = isLocalStore();
     $c->stash->{available} =
         $c->stash->{isLocalStore}
