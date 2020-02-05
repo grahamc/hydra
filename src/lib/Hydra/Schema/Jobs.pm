@@ -195,4 +195,22 @@ __PACKAGE__->has_many(
 # Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-02-05 19:40:52
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:o6Iy66DCd39XyIiT5QkORQ
 
+=head2 builds
+
+Type: has_many
+
+Related object: L<Hydra::Sc2hema::Builds>
+
+=cut
+
+__PACKAGE__->has_many(
+  "builds",
+  "Hydra::Schema::Builds",
+  {
+    "foreign.job"     => "self.name",
+    "foreign.jobset_id"  => "self.jobset_id",
+  },
+  undef,
+);
+
 1;
