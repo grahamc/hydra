@@ -41,6 +41,11 @@ __PACKAGE__->table("Jobsets");
   is_foreign_key: 1
   is_nullable: 0
 
+=head2 id
+
+  data_type: 'serial'
+  is_nullable: 0
+
 =head2 project
 
   data_type: 'text'
@@ -144,6 +149,8 @@ __PACKAGE__->table("Jobsets");
 __PACKAGE__->add_columns(
   "name",
   { data_type => "text", is_foreign_key => 1, is_nullable => 0 },
+  "id",
+  { data_type => "serial", is_nullable => 0 },
   "project",
   { data_type => "text", is_foreign_key => 1, is_nullable => 0 },
   "description",
@@ -195,6 +202,20 @@ __PACKAGE__->add_columns(
 =cut
 
 __PACKAGE__->set_primary_key("project", "name");
+
+=head1 UNIQUE CONSTRAINTS
+
+=head2 C<id_unique>
+
+=over 4
+
+=item * L</id>
+
+=back
+
+=cut
+
+__PACKAGE__->add_unique_constraint("id_unique", ["id"]);
 
 =head1 RELATIONS
 
@@ -352,8 +373,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07045 @ 2017-03-09 13:03:05
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ivYvsUyhEeaeI4EmRQ0/QQ
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-02-05 14:04:10
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:nYCuDZ8kEfmtUTbq4HGA1Q
 
 my %hint = (
     columns => [
