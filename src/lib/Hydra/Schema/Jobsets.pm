@@ -255,7 +255,7 @@ __PACKAGE__->has_many(
   undef,
 );
 
-=head2 jobs
+=head2 jobs_jobset_ids
 
 Type: has_many
 
@@ -264,7 +264,22 @@ Related object: L<Hydra::Schema::Jobs>
 =cut
 
 __PACKAGE__->has_many(
-  "jobs",
+  "jobs_jobset_ids",
+  "Hydra::Schema::Jobs",
+  { "foreign.jobset_id" => "self.id" },
+  undef,
+);
+
+=head2 jobs_project_jobsets
+
+Type: has_many
+
+Related object: L<Hydra::Schema::Jobs>
+
+=cut
+
+__PACKAGE__->has_many(
+  "jobs_project_jobsets",
   "Hydra::Schema::Jobs",
   {
     "foreign.jobset"  => "self.name",
@@ -373,8 +388,26 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-02-05 14:04:10
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:nYCuDZ8kEfmtUTbq4HGA1Q
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-02-05 19:28:13
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:UUR0srN7zKOyLEtqC9CavA
+
+=head2 jobs
+
+Type: has_many
+
+Related object: L<Hydra::Schema::Jobs>
+
+=cut
+
+__PACKAGE__->has_many(
+  "jobs",
+  "Hydra::Schema::Jobs",
+  {
+    "foreign.jobset"  => "self.name",
+    "foreign.project" => "self.project",
+  },
+  undef,
+);
 
 my %hint = (
     columns => [
