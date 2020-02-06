@@ -51,7 +51,7 @@ __PACKAGE__->table("Jobs");
 
   data_type: 'integer'
   is_foreign_key: 1
-  is_nullable: 1
+  is_nullable: 0
 
 =head2 name
 
@@ -66,7 +66,7 @@ __PACKAGE__->add_columns(
   "jobset",
   { data_type => "text", is_foreign_key => 1, is_nullable => 0 },
   "jobset_id",
-  { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
+  { data_type => "integer", is_foreign_key => 1, is_nullable => 0 },
   "name",
   { data_type => "text", is_nullable => 0 },
 );
@@ -139,12 +139,7 @@ __PACKAGE__->belongs_to(
   "jobset",
   "Hydra::Schema::Jobsets",
   { id => "jobset_id" },
-  {
-    is_deferrable => 0,
-    join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "NO ACTION",
-  },
+  { is_deferrable => 0, on_delete => "CASCADE", on_update => "NO ACTION" },
 );
 
 =head2 jobset_project_jobset
@@ -197,7 +192,7 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-02-05 17:08:31
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:y0mcYGXRIQoHOuXWT0Kxtw
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2020-02-05 19:40:52
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:o6Iy66DCd39XyIiT5QkORQ
 
 1;
