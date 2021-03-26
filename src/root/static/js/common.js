@@ -48,15 +48,28 @@ $(document).ready(function() {
 
     bootbox.setDefaults({ animate: false });
 
+    /* Enable popovers (and allow table and teletype elements in them). */
+    $.fn.popover.Constructor.Default.whiteList.table = [];
+    $.fn.popover.Constructor.Default.whiteList.thead = []
+    $.fn.popover.Constructor.Default.whiteList.tbody = [];
+    $.fn.popover.Constructor.Default.whiteList.tr = [];
+    $.fn.popover.Constructor.Default.whiteList.th = [];
+    $.fn.popover.Constructor.Default.whiteList.td = [];
+    $.fn.popover.Constructor.Default.whiteList.tt = [];
     $(".hydra-popover").popover({});
 
-    /* Deep emedding for tabs. */
+    /* Activates tab according to URL anchor. */
     if (window.location.hash) {
         $('.nav-tabs > .nav-item:not(.dropdown) a[href="' + window.location.hash + '"]').tab('show');
     }
 
+    $('.nav-tabs').each(function() {
+        if ($('.nav-item:not(.dropdown) a.active',this).length == 0)
+            $('.nav-item:not(.dropdown) a',this).first().tab('show');
+    });
+
     $('.nav-tabs > .nav-item:not(.dropdown) a[href^="#"]').on('click', function() {
-        history.pushState(null, null, window.location.href.split("#")[0] + $(this).attr("href"));
+        history.replaceState(null, null, window.location.href.split("#")[0] + $(this).attr("href"));
     });
 
     /* Automatically set Bootstrap radio buttons from hidden form controls. */
